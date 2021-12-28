@@ -26,6 +26,8 @@
 #define DIGITAL_IN(gpio, bit) (!!(gpio->PIN & bit))
 #define DIGITAL_OUT(gpio, bit, on) { if(on) gpio->SET = bit; else gpio->CLR = bit; }
 
+#define DIGITAL_PIN_OUT(gpio, pin, on) { if(on) gpio->SET = (1u << pin); else gpio->CLR = (1u << pin); }
+
 // Added missing definition for GPIO0
 #define LPC_GPIO0 ((LPC_GPIO_T *) LPC_GPIO0_BASE)
 

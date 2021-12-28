@@ -118,6 +118,10 @@
 #define CYCLE_START_PORT        port(CYCLE_START_PN)
 #define CYCLE_START_PIN         6
 
+#define ONBOARD_LED_PN          0
+#define ONBOARD_LED_PORT        port(ONBOARD_LED_PN)
+#define ONBOARD_LED_PIN         22
+
 #define CONTROL_INMODE          GPIO_BITBAND
 
 #ifdef SPINDLE_PWM_PIN_2_4
@@ -134,19 +138,19 @@
  // SCKx
  #define TMC_SPI_SCK_PORT_PN 1
  #define TMC_SPI_SCK_PORT port(TMC_SPI_SCK_PORT_PN)
- #define TMC_SPI_SCK_PORT_PIN 20
+ #define TMC_SPI_SCK_PIN 20
  // SSELx
  #define TMC_SPI_SSEL_PORT_PN 1
  #define TMC_SPI_SSEL_PORT port(TMC_SPI_SSEL_PORT_PN)
- #define TMC_SPI_SSEL_PORT_PIN 21
+ #define TMC_SPI_SSEL_PIN 21
  // MISOx
  #define TMC_SPI_MISO_PORT_PN 1
  #define TMC_SPI_MISO_PORT port(TMC_SPI_MISO_PORT_PN)
- #define TMC_SPI_MISO_PORT_PIN 23
+ #define TMC_SPI_MISO_PIN 23
  // MOSIx
  #define TMC_SPI_MOSI_PORT_PN 1
  #define TMC_SPI_MOSI_PORT port(TMC_SPI_MOSI_PORT_PN)
- #define TMC_SPI_MOSI_PORT_PIN 24
+ #define TMC_SPI_MOSI_PIN 24
 #endif /* TRINAMIC_ENABLE */
 
 #define SD_SPI_PORT             1

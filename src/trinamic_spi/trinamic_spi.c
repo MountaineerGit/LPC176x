@@ -49,6 +49,8 @@ TMC_spi_status_t tmc_spi_write (trinamic_motor_t driver, TMC_spi_datagram_t *dat
 
 TMC_spi_status_t tmc_spi_read (trinamic_motor_t driver, TMC_spi_datagram_t *datagram)
 {
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 0);
+
 	Chip_SSP_Int_FlushData(TMC_SPI);
 	uint32_t rx_cnt = 0, tx_cnt = 0;
 
@@ -82,6 +84,8 @@ TMC_spi_status_t tmc_spi_read (trinamic_motor_t driver, TMC_spi_datagram_t *data
 			rx_cnt++;
 		}
 	}
+
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 1);
 
 	return datagram->status;
 }
