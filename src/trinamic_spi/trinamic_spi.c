@@ -50,6 +50,10 @@ TMC_spi_status_t tmc_spi_write (trinamic_motor_t driver, TMC_spi_datagram_t *dat
 	TMC_spi_status_t status;
 	buffer[0] = datagram->addr.value | TMC_SPI_WRITE_FLAG;
 	memcpy(buffer+1, &datagram->payload.data[0], sizeof(TMC_payload_t));
+	buffer[4] = datagram->payload.data[0];
+	buffer[3] = datagram->payload.data[1];
+	buffer[2] = datagram->payload.data[2];
+	buffer[1] = datagram->payload.data[3];
 
 	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 0);
 	__NOP();
@@ -86,7 +90,10 @@ TMC_spi_status_t tmc_spi_read (trinamic_motor_t driver, TMC_spi_datagram_t *data
 	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 1);
 
 	status = buffer[0];
-	memcpy(&datagram->payload.data[0], buffer+1, sizeof(TMC_payload_t));
+	datagram->payload.data[0] = buffer[4];
+	datagram->payload.data[1] = buffer[3];
+	datagram->payload.data[2] = buffer[2];
+	datagram->payload.data[3] = buffer[1];
 
 	return status;
 }
