@@ -65,9 +65,9 @@
 // NOTE: All limit bits (needs to be on same port)
 #define LIMIT_PN                1
 #define LIMIT_PORT              port(LIMIT_PN)
-#define X_LIMIT_PIN             24
-#define Y_LIMIT_PIN             26
-#define Z_LIMIT_PIN             28
+#define X_LIMIT_PIN             27
+#define Y_LIMIT_PIN             28
+#define Z_LIMIT_PIN             29
 #define LIMITS_POLL_PORT        port(1) // NOTE: Port 1 is not interrupt capable, use polling instead!
 #define LIMIT_INMODE            GPIO_BITBAND
 

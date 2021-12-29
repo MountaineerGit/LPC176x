@@ -37,55 +37,56 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-
+#include <string.h>
 #include "chip.h"
 #include "motors/trinamic.h"
 
+static uint8_t buffer[sizeof(TMC_spi_datagram_t)];
+static const uint8_t BUFFER_LEN = sizeof(buffer);
+static const uint8_t TMC_SPI_WRITE_FLAG = 0x80u;
 
 TMC_spi_status_t tmc_spi_write (trinamic_motor_t driver, TMC_spi_datagram_t *datagram)
 {
-    return 0;
+	TMC_spi_status_t status;
+	buffer[0] = datagram->addr.value | TMC_SPI_WRITE_FLAG;
+	memcpy(buffer+1, &datagram->payload.data[0], sizeof(TMC_payload_t));
+
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 0);
+	__NOP();
+	__NOP();
+	Chip_SSP_WriteFrames_Blocking(TMC_SPI, buffer, BUFFER_LEN);
+	__NOP();
+	__NOP();
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 1);
+
+	status = buffer[0];
+	return status;
 }
 
 TMC_spi_status_t tmc_spi_read (trinamic_motor_t driver, TMC_spi_datagram_t *datagram)
 {
-	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 0);
+	TMC_spi_status_t status;
 
-	Chip_SSP_Int_FlushData(TMC_SPI);
-	uint32_t rx_cnt = 0, tx_cnt = 0;
-
-	static uint8_t buffer[sizeof(TMC_spi_datagram_t)] = {0};
-	const uint8_t buffer_len = sizeof(buffer);
-
+	// first step: send address to read from
 	buffer[0] = datagram->addr.idx;
 
-	while (tx_cnt < buffer_len || rx_cnt < buffer_len)
-	{
-		/* write data to buffer */
-		if ((Chip_SSP_GetStatus(TMC_SPI, SSP_STAT_TNF) == SET) && (tx_cnt < buffer_len)) {
-			Chip_SSP_SendFrame(TMC_SPI, buffer[tx_cnt]);	/* just send dummy data		 */
-			tx_cnt++;
-		}
-
-		/* Check overrun error */
-		if (Chip_SSP_GetRawIntStatus(TMC_SPI, SSP_RORRIS) == SET) {
-			return ERROR;
-		}
-
-		/* Check for any data available in RX FIFO */
-		while (Chip_SSP_GetStatus(TMC_SPI, SSP_STAT_RNE) == SET && rx_cnt < buffer_len)
-		{
-			if(rx_cnt == 0) {
-				datagram->status = Chip_SSP_ReceiveFrame(TMC_SPI);
-			}
-			else {
-				datagram->payload.data[rx_cnt] = Chip_SSP_ReceiveFrame(TMC_SPI);
-			}
-			rx_cnt++;
-		}
-	}
-
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 0);
+	__NOP(); __NOP();
+	Chip_SSP_WriteFrames_Blocking(TMC_SPI, buffer, BUFFER_LEN);
+	__NOP(); __NOP();
 	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 1);
 
-	return datagram->status;
+	__NOP(); __NOP(); __NOP(); __NOP();	__NOP(); __NOP(); __NOP();
+
+	// second step: get response
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 0);
+	__NOP(); __NOP();
+	Chip_SSP_ReadFrames_Blocking(TMC_SPI, buffer, BUFFER_LEN);
+	__NOP(); __NOP();
+	DIGITAL_PIN_OUT(TMC_SPI_SSEL_PORT, TMC_SPI_SSEL_PIN, 1);
+
+	status = buffer[0];
+	memcpy(&datagram->payload.data[0], buffer+1, sizeof(TMC_payload_t));
+
+	return status;
 }
