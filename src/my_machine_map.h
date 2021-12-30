@@ -152,7 +152,7 @@
 #define MOTOR_CS_PORT   port(MOTOR_CS_PN)
 #define MOTOR_CSX_PIN   21
 #define MOTOR_CSY_PIN   22
-//#define MOTOR_CSZ_PIN   10
+#define MOTOR_CSZ_PIN   18
 
  // MISOx
  #define TMC_SPI_MISO_PORT_PN 1
