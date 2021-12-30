@@ -47,7 +47,7 @@
 #define DIRECTION_PORT          port(DIRECTION_PN)
 #define X_DIRECTION_PIN         5
 #define Y_DIRECTION_PIN         11
-#define Z_DIRECTION_PIN         20
+#define Z_DIRECTION_PIN         8
 #define DIRECTION_OUTMODE       GPIO_MAP
 
 // Define stepper driver enable/disable output pin(s).
@@ -59,7 +59,7 @@
 #define Y_ENABLE_PIN            10
 #define Z_ENABLE_PN             0
 #define Z_ENABLE_PORT           port(Z_ENABLE_PN)
-#define Z_ENABLE_PIN            19
+#define Z_ENABLE_PIN            9
 
 // Define homing/hard limit switch input pins.
 // NOTE: All limit bits (needs to be on same port)
@@ -77,13 +77,18 @@
 #define M3_STEP_PORT        port(STEP_PN)
 #define M3_STEP_PIN         3
 #define M3_DIRECTION_PORT   port(DIRECTION_PN)
-#define M3_DIRECTION_PIN    22
+#define M3_DIRECTION_PIN    6
 #define M3_LIMIT_PORT       port(LIMIT_PN)
-#define M3_LIMIT_PIN        29
+#define M3_LIMIT_PIN        26
 #define M3_ENABLE_PN        0
 #define M3_ENABLE_PORT      port(M3_ENABLE_PN)
-#define M3_ENABLE_PIN       21
+#define M3_ENABLE_PIN       7
 #endif
+
+// LED
+#define ONBOARD_LED_PN          0
+#define ONBOARD_LED_PORT        port(ONBOARD_LED_PN)
+#define ONBOARD_LED_PIN         22
 
 // Define probe switch input pin.
 #define PROBE_PN                4
@@ -118,10 +123,6 @@
 #define CYCLE_START_PORT        port(CYCLE_START_PN)
 #define CYCLE_START_PIN         6
 
-#define ONBOARD_LED_PN          0
-#define ONBOARD_LED_PORT        port(ONBOARD_LED_PN)
-#define ONBOARD_LED_PIN         22
-
 #define CONTROL_INMODE          GPIO_BITBAND
 
 #ifdef SPINDLE_PWM_PIN_2_4
@@ -139,10 +140,20 @@
  #define TMC_SPI_SCK_PORT_PN 1
  #define TMC_SPI_SCK_PORT port(TMC_SPI_SCK_PORT_PN)
  #define TMC_SPI_SCK_PIN 20
- // SSELx
- #define TMC_SPI_SSEL_PORT_PN 1
- #define TMC_SPI_SSEL_PORT port(TMC_SPI_SSEL_PORT_PN)
- #define TMC_SPI_SSEL_PIN 21
+ // CS: x-Axis
+ //#define TMC_SPI_CS_X_AXIS_PORT_PN 1
+ //#define TMC_SPI_CS_X_AXIS_PORT port(TMC_SPI_CS_X_AXIS_PORT_PN)
+ //#define TMC_SPI_CS_X_AXIS_PIN 21
+ // CS: y-Axis
+ //#define TMC_SPI_CS_Y_AXIS_PORT_PN 1
+ //#define TMC_SPI_CS_Y_AXIS_PORT port(TMC_SPI_CS_Y_AXIS_PORT_PN)
+ //#define TMC_SPI_CS_Y_AXIS_PIN 22
+#define MOTOR_CS_PN 	1
+#define MOTOR_CS_PORT   port(MOTOR_CS_PN)
+#define MOTOR_CSX_PIN   21
+#define MOTOR_CSY_PIN   22
+//#define MOTOR_CSZ_PIN   10
+
  // MISOx
  #define TMC_SPI_MISO_PORT_PN 1
  #define TMC_SPI_MISO_PORT port(TMC_SPI_MISO_PORT_PN)
@@ -153,11 +164,11 @@
  #define TMC_SPI_MOSI_PIN 24
 #endif /* TRINAMIC_ENABLE */
 
-#define SD_SPI_PORT             1
-#define SD_CS_PN                0
-#define SD_CS_PORT              port(SD_CS_PN)
-#define SD_CS_PIN               6
-
-#define MCP44XX_I2C_ADDR        0b0101100
+#if defined (SDCARD_ENABLE) && (SDCARD_ENABLE == 1)
+ #define SD_SPI_PORT             1
+ #define SD_CS_PN                0
+ #define SD_CS_PORT              port(SD_CS_PN)
+ #define SD_CS_PIN               6
+#endif
 
 /**/
